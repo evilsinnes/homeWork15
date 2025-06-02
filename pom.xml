@@ -40,7 +40,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
@@ -50,5 +57,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>
