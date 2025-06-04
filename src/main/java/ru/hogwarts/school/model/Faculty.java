@@ -18,7 +18,7 @@ public class Faculty {
     private String color;
 
     @OneToMany (mappedBy = "faculty")
-
+    @JsonIgnore
     private Collection<Student> students;
     public  Collection<Student> getStudents() {
         return students;
