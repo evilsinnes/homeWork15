@@ -36,14 +36,10 @@ public class FacultyService {
     public void deleteFaculty(long id) {
         facultyRepository.deleteById(id);
     }
-
-//    public Collection<Faculty> findByColor(String color) {
-//        ArrayList<Faculty> result = new ArrayList<>();
-//        for (Faculty faculty : faculties.values()) {
-//            if (Objects.equals(faculty.getColor(), color)) {
-//                result.add(faculty);
-//            }
-//        }
-//        return result;
- //   }
+    public Collection<Faculty> getAllFaculty() {
+        return facultyRepository.findAll();
+    }
+    public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
 }
