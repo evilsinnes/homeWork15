@@ -26,7 +26,7 @@ public class FacultyController {
 
     @GetMapping("{id}")
     public Faculty getFacultyInfo(@PathVariable Long id) {
-        Faculty faculty = facultyService.findFaculty(id);
+       // Faculty faculty = facultyService.findFaculty(id);
                 return facultyService.findFaculty(id);
     }
     @PostMapping
@@ -64,5 +64,12 @@ public ResponseEntity<Collection<Faculty>> getAllFaculty() {
         Collection<Faculty> faculties = facultyService.findFacultiesByNameOrColor(name,color);
         return ResponseEntity.ok(faculties);
     }
+    @GetMapping("/{facultyId}/students")
+    public Collection<Student> getFacultyStudents(@PathVariable Long facultyId) {
+        return facultyService.findFaculty(facultyId).getStudents();
+    }
+
 }
+
+
 

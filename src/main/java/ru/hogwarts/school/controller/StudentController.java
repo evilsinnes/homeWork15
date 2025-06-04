@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -23,7 +24,7 @@ public class StudentController {
 
     @GetMapping("{id}")
     public Student getStudentInfo(@PathVariable Long id) {
-        Student student = studentService.findStudent(id);
+        //Student student = studentService.findStudent(id);
        return studentService.findStudent(id);
     }
 
@@ -58,13 +59,11 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
-//    @GetMapping ("{age}")
-//    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
-//        if (age > 0) {
-//            return ResponseEntity.ok(studentService.findByAge(age));
-//        }
-//        return ResponseEntity.ok(Collections.emptyList());
-//    }
-
+    @GetMapping("/{studentId}/faculty")
+    public Faculty getStudentFaculty(@PathVariable Long studentId) {
+        return studentService.findStudent(studentId).getFaculty();
+    }
 }
+
+
 
