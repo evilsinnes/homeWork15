@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -82,6 +83,17 @@ public class StudentService {
         avatar.setData(file.getBytes());
 
         avatarRepository.save(avatar);
+    }
+    public Integer getTotalCountOfStudents() {
+        return studentRepository.getTotalCountOfStudents();
+    }
+
+    public Double getAverageAgeOfStudents() {
+        return studentRepository.getAverageAgeOfStudents();
+    }
+
+    public List<Student> findLastFiveStudents() {
+        return studentRepository.findLastFiveStudents();
     }
 
     private String getExtension(String fileName) {
