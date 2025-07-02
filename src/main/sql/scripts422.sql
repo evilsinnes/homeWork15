@@ -5,6 +5,7 @@ CREATE TABLE car (
     cost NUMERIC(10, 2) NOT NULL
 );
 
+
 CREATE TABLE person (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
