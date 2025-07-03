@@ -31,7 +31,15 @@ public class StudentService {
                 this.studentRepository = studentRepository;
         this.avatarRepository = avatarRepository;
     }
-
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+    public Student updateStudent(Student student) {
+        if (!studentRepository.existsById(student.getId())) {
+            throw new StudentNotFoundException(student.getId());
+        }
+        return studentRepository.save(student);
+    }
     public Student addStudent(Student student) {
 
         return studentRepository.save(student);
@@ -45,7 +53,10 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public void deleteStudent(long id){
+    public void deleteStudent(Long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new StudentNotFoundException(id);
+        }
         studentRepository.deleteById(id);
     }
 
