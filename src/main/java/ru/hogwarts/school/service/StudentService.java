@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.AvatarRepository;
@@ -35,9 +36,7 @@ public class StudentService {
         return studentRepository.save(student);
     }
     public Student updateStudent(Student student) {
-        if (!studentRepository.existsById(student.getId())) {
-            throw new StudentNotFoundException(student.getId());
-        }
+        if (!studentRepository.existsById(student.getId())) throw new StudentNotFoundException(student.getId());
         return studentRepository.save(student);
     }
     public Student addStudent(Student student) {
