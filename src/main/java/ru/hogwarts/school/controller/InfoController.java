@@ -1,20 +1,31 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/info")
 public class InfoController {
 
-    private final ServletWebServerApplicationContext webServerAppCtxt;
+    @Value("${server.port}")
+    private int serverPort;
 
-    public InfoController(ServletWebServerApplicationContext webServerAppCtxt) {
-        this.webServerAppCtxt = webServerAppCtxt;
-    }
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
 
     @GetMapping("/port")
-    public int getPort() {
-        return webServerAppCtxt.getWebServer().getPort();
+    public String getPort() {
+        return String.format(
+                "Application is running on port: %d (Active profile: %s)",
+                serverPort,
+                activeProfile
+        );
+    }
+
+    @GetMapping("/profile")
+    public String getActiveProfile() {
+        return "Current active profile: " + activeProfile;
     }
 }
