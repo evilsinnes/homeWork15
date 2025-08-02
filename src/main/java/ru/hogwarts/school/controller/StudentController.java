@@ -160,6 +160,58 @@ public class StudentController {
         long n = 1_000_000;
         return n * (n + 1) / 2;
     }
+    @GetMapping("/print-parallel")
+    public void printStudentsParallel() {
+        List<Student> students = studentService.getAllStudents();
+
+        if (students.size() >= 6) {
+            // Основной поток - первые два имени
+            System.out.println(students.get(0).getName());
+            System.out.println(students.get(1).getName());
+
+            // Параллельный поток 1 - третий и четвертый студент
+            new Thread(() -> {
+                System.out.println(students.get(2).getName());
+                System.out.println(students.get(3).getName());
+            }).start();
+
+            // Параллельный поток 2 - пятый и шестой студент
+            new Thread(() -> {
+                System.out.println(students.get(4).getName());
+                System.out.println(students.get(5).getName());
+            }).start();
+        } else {
+            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
+        }
+    }
+
+    private synchronized void printName(String name) {
+        System.out.println(name);
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printStudentsSynchronized() {
+        List<Student> students = studentService.getAllStudents();
+
+        if (students.size() >= 6) {
+
+            printName(students.get(0).getName());
+            printName(students.get(1).getName());
+
+            new Thread(() -> {
+                printName(students.get(2).getName());
+                printName(students.get(3).getName());
+            }).start();
+
+
+            new Thread(() -> {
+                printName(students.get(4).getName());
+                printName(students.get(5).getName());
+            }).start();
+        } else {
+            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
+        }
+    }
 
 }
 
