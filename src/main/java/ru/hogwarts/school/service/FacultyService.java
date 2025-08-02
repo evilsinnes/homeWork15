@@ -9,10 +9,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.FacultyRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class FacultyService {
@@ -64,7 +61,12 @@ public class FacultyService {
 
         return facultyRepository.findAll();
     }
-    public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
+
+    public List<Faculty> getAllFaculties() {
+        logger.info("Was invoked method for get all faculties");
+        return facultyRepository.findAll();
+
+    }    public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
         logger.info("Was invoked method for find faculties by name or color");
         logger.debug("Searching faculties with name: {} or color: {}", name, color);
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 
 @RestController
 @RequestMapping ("/faculty")
@@ -67,6 +68,13 @@ public ResponseEntity<Collection<Faculty>> getAllFaculty() {
     @GetMapping("/{facultyId}/students")
     public Collection<Student> getFacultyStudents(@PathVariable Long facultyId) {
         return facultyService.findFaculty(facultyId).getStudents();
+    }
+    @GetMapping("/faculties/longest-name")
+    public String getLongestFacultyName() {
+        return facultyService.getAllFaculty().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
     }
 
 }

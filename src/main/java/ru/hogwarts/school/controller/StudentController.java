@@ -1,9 +1,11 @@
 package ru.hogwarts.school.controller;
 
+import ch.qos.logback.classic.Logger;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,14 +24,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
 
 @RestController
 @RequestMapping ("/student")
 
 public class StudentController {
     private final StudentService studentService;
-
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(StudentController.class);
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
@@ -41,7 +48,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getAllStudent() {
+    public ResponseEntity<Collection<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudent());
     }
     @GetMapping("/age-between")
@@ -98,10 +105,6 @@ public class StudentController {
         return studentService.getTotalCountOfStudents();
     }
 
-    @GetMapping("/avg-age")
-    public Double getAverageAge() {
-        return studentService.getAverageAgeOfStudents();
-    }
 
     @GetMapping("/last-five")
     public List<Student> getLastFiveStudents() {
@@ -122,6 +125,42 @@ public class StudentController {
             is.transferTo(os);
         }
     }
+    @GetMapping("/names-starting-with-a")
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Was invoked method for get student names starting with A");
+        return studentService.getAllStudent().stream()
+                .map(Student::getName)
+                .filter(name -> name.toUpperCase().startsWith("А"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+    @GetMapping("/average-age")
+    public Double getAverageAge() {
+        logger.info("Was invoked method for get average age");
+        return studentService.getAllStudent().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
+
+    @GetMapping("/parallel-sum")
+    public Long getParallelSum() {
+        logger.info("Was invoked method for calculate parallel sum");
+        return Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .parallel()
+                .mapToLong(Integer::longValue)
+                .reduce(0, Long::sum);
+    }
+
+    @GetMapping("/optimized-sum")
+    public Long getOptimizedSum() {
+        logger.info("Was invoked method for calculate optimized sum");
+        long n = 1_000_000;
+        return n * (n + 1) / 2;
+    }
+
 }
 
 

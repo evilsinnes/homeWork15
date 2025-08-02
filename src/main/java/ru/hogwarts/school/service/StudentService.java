@@ -74,6 +74,10 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
+    public List<Student> getAllStudents() {
+        logger.info("Was invoked method for get all students");
+        return studentRepository.findAll();
+    }
 
 
     public Collection<Student> getAllStudent() {
