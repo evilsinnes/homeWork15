@@ -76,6 +76,7 @@ public class StudentController {
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
     }
+
     @GetMapping("/{studentId}/faculty")
     public Faculty getStudentFaculty(@PathVariable Long studentId) {
         return studentService.findStudent(studentId).getFaculty();
@@ -127,62 +128,28 @@ public class StudentController {
     }
     @GetMapping("/names-starting-with-a")
     public List<String> getStudentNamesStartingWithA() {
-        logger.info("Was invoked method for get student names starting with A");
-        return studentService.getAllStudent().stream()
-                .map(Student::getName)
-                .filter(name -> name.toUpperCase().startsWith("А"))
-                .map(String::toUpperCase)
-                .sorted()
-                .collect(Collectors.toList());
+        return studentService.getStudentNamesStartingWithA();
+
     }
     @GetMapping("/average-age")
     public Double getAverageAge() {
-        logger.info("Was invoked method for get average age");
-        return studentService.getAllStudent().stream()
-                .mapToInt(Student::getAge)
-                .average()
-                .orElse(0.0);
+        return studentService.getAverageAge();
+
     }
 
     @GetMapping("/parallel-sum")
-    public Long getParallelSum() {
-        logger.info("Was invoked method for calculate parallel sum");
-        return Stream.iterate(1, a -> a + 1)
-                .limit(1_000_000)
-                .parallel()
-                .mapToLong(Integer::longValue)
-                .reduce(0, Long::sum);
+    public Integer calculateSum() {
+        return studentService.calculateSum();
     }
 
     @GetMapping("/optimized-sum")
-    public Long getOptimizedSum() {
-        logger.info("Was invoked method for calculate optimized sum");
-        long n = 1_000_000;
-        return n * (n + 1) / 2;
+    public Long optimizedСalculateSum() {
+        return studentService.optimizedСalculateSum();
     }
+
     @GetMapping("/print-parallel")
     public void printStudentsParallel() {
-        List<Student> students = studentService.getAllStudents();
-
-        if (students.size() >= 6) {
-            // Основной поток - первые два имени
-            System.out.println(students.get(0).getName());
-            System.out.println(students.get(1).getName());
-
-            // Параллельный поток 1 - третий и четвертый студент
-            new Thread(() -> {
-                System.out.println(students.get(2).getName());
-                System.out.println(students.get(3).getName());
-            }).start();
-
-            // Параллельный поток 2 - пятый и шестой студент
-            new Thread(() -> {
-                System.out.println(students.get(4).getName());
-                System.out.println(students.get(5).getName());
-            }).start();
-        } else {
-            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
-        }
+        studentService.printStudentsParallel();
     }
 
     private synchronized void printName(String name) {
@@ -191,29 +158,11 @@ public class StudentController {
 
     @GetMapping("/print-synchronized")
     public void printStudentsSynchronized() {
-        List<Student> students = studentService.getAllStudents();
-
-        if (students.size() >= 6) {
-
-            printName(students.get(0).getName());
-            printName(students.get(1).getName());
-
-            new Thread(() -> {
-                printName(students.get(2).getName());
-                printName(students.get(3).getName());
-            }).start();
-
-
-            new Thread(() -> {
-                printName(students.get(4).getName());
-                printName(students.get(5).getName());
-            }).start();
-        } else {
-            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
-        }
+        studentService.printStudentsSynchronized();
+    }
     }
 
-}
+
 
 
 

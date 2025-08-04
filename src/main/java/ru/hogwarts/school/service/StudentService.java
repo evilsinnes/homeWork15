@@ -3,12 +3,10 @@ package ru.hogwarts.school.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Avatar;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.AvatarRepository;
 import ru.hogwarts.school.repositories.StudentRepository;
@@ -16,12 +14,9 @@ import ru.hogwarts.school.repositories.StudentRepository;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService {
@@ -140,7 +135,94 @@ public class StudentService {
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Getting student names starting with A");
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name.toUpperCase().startsWith("А"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+    public Double getAverageAge() {
+        logger.info("Calculating average age of students");
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
 
+    public String getLongestFacultyName() {
+        logger.info("Finding longest faculty name");
+        return studentRepository.findAll().stream()
+                .map(student -> student.getFaculty().getName())
+                .max(Comparator.comparingInt(String::length))
+                .orElse("No faculties found");
+    }
+
+    public Integer calculateSum() {
+        logger.info("Calculating sum with parallel streams");
+        return Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .parallel()
+                .reduce(0, Integer::sum);
+    }
+    public void printStudentsParallel() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+            System.out.println("Основной поток:");
+            System.out.println(students.get(0).getName());
+            System.out.println(students.get(1).getName());
+
+            new Thread(() -> {
+                System.out.println("Поток 1:");
+                System.out.println(students.get(2).getName());
+                System.out.println(students.get(3).getName());
+            }).start();
+
+            new Thread(() -> {
+                System.out.println("Поток 2:");
+                System.out.println(students.get(4).getName());
+                System.out.println(students.get(5).getName());
+            }).start();
+        } else {
+            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
+        }
+    }
+
+    public synchronized void printStudentsSynchronized() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+            System.out.println("Основной поток (синхронизированный):");
+            printName(students.get(0).getName());
+            printName(students.get(1).getName());
+
+            new Thread(() -> {
+                System.out.println("Поток 1 (синхронизированный):");
+                printName(students.get(2).getName());
+                printName(students.get(3).getName());
+            }).start();
+
+            new Thread(() -> {
+                System.out.println("Поток 2 (синхронизированный):");
+                printName(students.get(4).getName());
+                printName(students.get(5).getName());
+            }).start();
+        } else {
+            System.out.println("Недостаточно студентов для вывода (требуется минимум 6)");
+        }
+    }
+
+    private synchronized void printName(String name) {
+        System.out.println(name);
+    }
+    public long optimizedСalculateSum(){
+        logger.info("Was invoked method for calculate optimized sum");
+        long n = 1_000_000;
+        return n * (n + 1) / 2;
+    }
   }
 
 
